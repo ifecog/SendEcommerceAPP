@@ -19,3 +19,63 @@ h3 {
 .rating span {
   margin: 0.1rem;
 }
+
+.list-group-item-no-decoration {
+  text-decoration: none;
+}
+
+.card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-img-top {
+  height: 200px; /* Slightly reduce the image height */
+  object-fit: cover;
+}
+
+.card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.5rem; /* Further reduce padding */
+}
+
+.card-title {
+  flex: 0 0 auto;
+  margin-bottom: 0.3rem; /* Further reduce margin */
+  font-size: 1rem; /* Adjust font size if needed */
+}
+
+.card-text {
+  flex: 0 0 auto;
+  margin-bottom: 0.3rem; /* Further reduce margin */
+  font-size: 0.9rem; /* Adjust font size if needed */
+  text-decoration: none;
+}
+
+.card-price {
+  flex: 0 0 auto;
+  margin-top: 0.1rem; /* Further reduce margin */
+  text-decoration-line: line-through;
+  font-size: 1rem; /* Adjust font size if needed */
+}
+
+.card-discount-price {
+  flex: 0 0 auto;
+  margin-top: 0.1rem; /* Further reduce margin */
+  font-size: 1rem; /* Adjust font size if needed */
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0; /* Remove default margin */
+}
+
+.rating div {
+  margin-left: 0.3rem; /* Adjust spacing between rating and text */
+}
