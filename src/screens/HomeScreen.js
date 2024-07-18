@@ -6,6 +6,7 @@ import Product from '../components/Product'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 import Paginate from '../components/Paginate'
+import second from '../components/SearchBox'
 import {listProducts} from '../actions/productActions'
 
 function HomeScreen() {
@@ -24,7 +25,7 @@ function HomeScreen() {
   return (
     <div>
       {!keyword}
-      <h1>Latest Products</h1>
+      <h2>Shop</h2>
       {loading ? (
         <Loader />
       ) : error ? (

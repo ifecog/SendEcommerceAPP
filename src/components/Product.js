@@ -34,12 +34,14 @@ function Product({product}) {
           </div>
         </Card.Text>
 
-        <Card.Text as='h2' className='card-discount-price'>
-          ${product.discount_price}
-        </Card.Text>
-        <Card.Text as='h2' className='card-price'>
-          ${product.price}
-        </Card.Text>
+        <div className='price-container'>
+          <Card.Text as='h2' className='card-discount-price'>
+            ${product.discount_price}
+          </Card.Text>
+          <Card.Text as='h2' className='card-price'>
+            ${product.price}
+          </Card.Text>
+        </div>
       </Card.Body>
     </Card>
   )

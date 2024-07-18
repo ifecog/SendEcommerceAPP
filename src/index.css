@@ -58,24 +58,32 @@ h3 {
 
 .card-price {
   flex: 0 0 auto;
-  margin-top: 0.1rem; /* Further reduce margin */
+  margin-top: 0.1rem;
+  margin-bottom: 0rem;
   text-decoration-line: line-through;
-  font-size: 1rem; /* Adjust font size if needed */
+  font-size: 1rem;
 }
 
 .card-discount-price {
   flex: 0 0 auto;
-  margin-top: 0.1rem; /* Further reduce margin */
-  font-size: 1rem; /* Adjust font size if needed */
+  margin-top: 0.1rem;
+  margin-bottom: 0.1rem;
+  font-size: 1rem;
 }
 
 .rating {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 0; /* Remove default margin */
+  margin: 1;
 }
 
 .rating div {
   margin-left: 0.3rem; /* Adjust spacing between rating and text */
+}
+
+.price-container {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem; /* Adjust the gap between prices */
 }
