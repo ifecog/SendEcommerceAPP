@@ -100,3 +100,103 @@ h3 {
   width: 100%;
   border-radius: 5px;
 }
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: black;
+}
+
+.carousel-item img {
+  width: 100%;
+  height: 450px; /* Adjust the height as needed */
+  object-fit: cover; /* Ensure the image covers the entire area without distorting */
+  display: block;
+  margin: 0 auto;
+}
+
+.thumbnail-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.thumbnail {
+  cursor: pointer;
+  max-width: 80px;
+  max-height: 80px;
+  margin: 0 5px;
+  opacity: 0.6;
+  object-fit: cover; /* Ensure the thumbnail covers the entire area without distorting */
+}
+
+.thumbnail.active {
+  opacity: 1;
+  border: 2px solid black;
+}
+
+.strikethrough {
+  text-decoration: line-through;
+  color: grey;
+}
+
+/* styles.css */
+
+.carousel-custom .carousel-item img {
+  max-height: 500px;
+  object-fit: cover;
+}
+
+.thumbnail-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.thumbnail {
+  width: 80px;
+  height: 80px;
+  margin: 0 5px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.thumbnail:hover {
+  transform: scale(1.1);
+}
+
+.thumbnail.active {
+  border: 2px solid #007bff;
+}
+
+.strikethrough {
+  text-decoration: line-through;
+  color: #6c757d;
+}
+
+.list-group-item-no-decoration {
+  text-decoration: none;
+}
+
+.product-screen {
+  padding: 20px;
+}
+
+.product-screen .btn-block {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.form-select-override {
+  width: 100%;
+}
+
+.card {
+  border: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card .list-group-item {
+  border: none;
+}

@@ -6,13 +6,26 @@ import {
 import {thunk} from 'redux-thunk'
 import {composeWithDevTools} from 'redux-devtools-extension'
 // Reducers
-import {productListReducer} from './reducers/productReducers'
-import {userSigninReducer, userSignupReducer} from './reducers/userReducers'
+import {
+  productDetailsReducer,
+  productListReducer,
+  productCreateReviewReducer,
+} from './reducers/productReducers'
+import {
+  userDetailsReducer,
+  userSigninReducer,
+  userSignupReducer,
+  userUpdateProfileReducer,
+} from './reducers/userReducers'
 
 const reducer = combineReducers({
   productList: productListReducer,
+  productDetails: productDetailsReducer,
+  productCreateReview: productCreateReviewReducer,
   userSignin: userSigninReducer,
   userSignup: userSignupReducer,
+  userDetails: userDetailsReducer,
+  userUpdateProfile: userUpdateProfileReducer,
 })
 
 const userInfoFromStorage = localStorage.getItem('userInfo')

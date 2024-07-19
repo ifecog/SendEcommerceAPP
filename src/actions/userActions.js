@@ -9,16 +9,16 @@ import {
   USER_SIGNUP_REQUEST,
   USER_SIGNUP_SUCCESS,
   USER_SIGNUP_FAIL,
-  // // user details
-  // USER_DETAILS_REQUEST,
-  // USER_DETAILS_SUCCESS,
-  // USER_DETAILS_FAIL,
-  // USER_DETAILS_RESET,
-  // // user update
-  // USER_UPDATE_PROFILE_REQUEST,
-  // USER_UPDATE_PROFILE_SUCCESS,
-  // USER_UPDATE_PROFILE_FAIL,
-  // USER_UPDATE_PROFILE_RESET,
+  // user details
+  USER_DETAILS_REQUEST,
+  USER_DETAILS_SUCCESS,
+  USER_DETAILS_FAIL,
+  USER_DETAILS_RESET,
+  // user update
+  USER_UPDATE_PROFILE_REQUEST,
+  USER_UPDATE_PROFILE_SUCCESS,
+  USER_UPDATE_PROFILE_FAIL,
+  USER_UPDATE_PROFILE_RESET,
   // // admin users list
   // USER_LIST_REQUEST,
   // USER_LIST_SUCCESS,
@@ -75,6 +75,9 @@ export const signout = () => (dispatch) => {
   dispatch({
     type: USER_SIGNOUT,
   })
+  dispatch({
+    type: USER_DETAILS_RESET,
+  })
 }
 
 export const signup =
@@ -123,3 +126,78 @@ export const signup =
       })
     }
   }
+
+export const getUserDetails = (uuid) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_DETAILS_REQUEST,
+    })
+
+    const {
+      userLogin: {userInfo},
+    } = getState()
+
+    const config = {
+      headers: {
+        'Content-type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+
+    const {data} = await axios.get(`/api/users/${uuid}/`, config)
+
+    dispatch({
+      type: USER_DETAILS_SUCCESS,
+      payload: data,
+    })
+  } catch (error) {
+    dispatch({
+      type: USER_DETAILS_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    })
+  }
+}
+
+export const updateUserProfile = (user) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_UPDATE_PROFILE_REQUEST,
+    })
+
+    const {
+      userLogin: {userInfo},
+    } = getState()
+
+    const config = {
+      headers: {
+        'Content-type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+
+    const {data} = await axios.put('/api/users/profile/update/', user, config)
+
+    dispatch({
+      type: USER_UPDATE_PROFILE_SUCCESS,
+      payload: data,
+    })
+
+    dispatch({
+      type: USER_SIGNIN_SUCCESS,
+      payload: data,
+    })
+
+    localStorage.setItem('userInfo', JSON.stringify(data))
+  } catch (error) {
+    dispatch({
+      type: USER_UPDATE_PROFILE_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    })
+  }
+}

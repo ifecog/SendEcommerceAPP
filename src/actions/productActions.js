@@ -8,15 +8,15 @@ import {
   // PRODUCT_TOP_RATED_REQUEST,
   // PRODUCT_TOP_RATED_SUCCESS,
   // PRODUCT_TOP_RATED_FAIL,
-  // // product details
-  // PRODUCT_DETAILS_REQUEST,
-  // PRODUCT_DETAILS_SUCCESS,
-  // PRODUCT_DETAILS_FAIL,
-  // // product reviews
-  // PRODUCT_CREATE_REVIEW_REQUEST,
-  // PRODUCT_CREATE_REVIEW_SUCCESS,
-  // PRODUCT_CREATE_REVIEW_FAIL,
-  // PRODUCT_CREATE_REVIEW_RESET,
+  // product details
+  PRODUCT_DETAILS_REQUEST,
+  PRODUCT_DETAILS_SUCCESS,
+  PRODUCT_DETAILS_FAIL,
+  // product reviews
+  PRODUCT_CREATE_REVIEW_REQUEST,
+  PRODUCT_CREATE_REVIEW_SUCCESS,
+  PRODUCT_CREATE_REVIEW_FAIL,
+  PRODUCT_CREATE_REVIEW_RESET,
   // // admin create products
   // PRODUCT_CREATE_REQUEST,
   // PRODUCT_CREATE_SUCCESS,
@@ -50,6 +50,68 @@ export const listProducts =
     } catch (error) {
       dispatch({
         type: PRODUCT_LIST_FAIL,
+        payload:
+          error.response && error.response.data.detail
+            ? error.response.data.detail
+            : error.message,
+      })
+    }
+  }
+
+export const listProductDetails = (uuid) => async (dispatch) => {
+  try {
+    dispatch({
+      type: PRODUCT_DETAILS_REQUEST,
+    })
+
+    const {data} = await axios.get(`/api/products/${uuid}`)
+
+    dispatch({
+      type: PRODUCT_DETAILS_SUCCESS,
+      payload: data,
+    })
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_DETAILS_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    })
+  }
+}
+
+export const createProductReview =
+  (uuid, review) => async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: PRODUCT_CREATE_REVIEW_REQUEST,
+      })
+
+      const {
+        userSignin: {userInfo},
+      } = getState()
+
+      const config = {
+        headers: {
+          'Content-type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      }
+
+      const {data} = await axios.post(
+        `/api/products/${uuid}/reviews/`,
+        review,
+        config
+      )
+
+      dispatch({
+        type: PRODUCT_CREATE_REVIEW_SUCCESS,
+        payload: data,
+      })
+    } catch (error) {
+      dispatch({
+        type: PRODUCT_CREATE_REVIEW_FAIL,
         payload:
           error.response && error.response.data.detail
             ? error.response.data.detail
