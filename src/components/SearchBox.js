@@ -1,9 +1,9 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {Button, Form} from 'react-bootstrap'
 import {useNavigate, useLocation} from 'react-router-dom'
 
 function SearchBox() {
-  const [keyword, setKeyword] = ''
+  const [keyword, setKeyword] = useState('')
 
   const navigate = useNavigate()
   const location = useLocation()

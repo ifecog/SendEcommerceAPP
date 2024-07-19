@@ -4,6 +4,8 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 // Screens
 import HomeScreen from './screens/HomeScreen'
+import SigninScreen from './screens/SigninScreen'
+import SignupScreen from './screens/SignupScreen'
 
 function App() {
   return (
@@ -13,6 +15,8 @@ function App() {
         <Container>
           <Routes>
             <Route path='/' element={<HomeScreen />} exact />
+            <Route path='/signin' element={<SigninScreen />} />
+            <Route path='/signup' element={<SignupScreen />} />
           </Routes>
         </Container>
       </main>

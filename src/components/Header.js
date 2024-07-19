@@ -1,57 +1,72 @@
 import React from 'react'
-import {
-  Navbar,
-  Nav,
-  NavDropdown,
-  Container,
-  Form,
-  Button,
-} from 'react-bootstrap'
+import {useDispatch, useSelector} from 'react-redux'
+import {useNavigate} from 'react-router-dom'
+import {Nav, Navbar, Container, NavDropdown} from 'react-bootstrap'
+import {LinkContainer} from 'react-router-bootstrap'
+import {signout} from '../actions/userActions'
+import SearchBox from './SearchBox'
 
 function Header() {
+  const userSignin = useSelector((state) => state.userSignin)
+  const {userInfo} = userSignin
+
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  const logoutHandler = () => {
+    dispatch(signout())
+    navigate('/signin')
+  }
+
   return (
     <div>
       <header>
         <Navbar bg='dark' variant='dark' expand='lg' collapseOnSelect>
-          <Container fluid>
-            <Navbar.Brand href='/'>SendCommerce</Navbar.Brand>
-            <Navbar.Toggle aria-controls='navbarScroll' />
-            <Navbar.Collapse id='navbarScroll'>
-              <Nav
-                className='me-auto my-2 my-lg-0'
-                style={{maxHeight: '100px'}}
-                navbarScroll
-              >
-                <Nav.Link href='/cart'>
-                  <i className='fas fa-shopping-cart'></i> cart
-                </Nav.Link>
-                <Nav.Link href='/login'>
-                  <i className='fas fa-user'></i> Login
-                </Nav.Link>
-                <NavDropdown title='Link' id='navbarScrollingDropdown'>
-                  <NavDropdown.Item href='#action3'>Action</NavDropdown.Item>
-                  <NavDropdown.Item href='#action4'>
-                    Another action
-                  </NavDropdown.Item>
-                  <NavDropdown.Divider />
-                  <NavDropdown.Item href='#action5'>
-                    Something else here
-                  </NavDropdown.Item>
-                </NavDropdown>
-                <Nav.Link href='#' disabled>
-                  Link
-                </Nav.Link>
+          <Container>
+            <Navbar.Brand href='/'>Cartify</Navbar.Brand>
+            <Navbar.Toggle aria-controls='basic-navbar-nav' />
+            <Navbar.Collapse id='basic-navbar-nav'>
+              <Nav className='me-auto'>
+                <LinkContainer to='/cart'>
+                  <Nav.Link>
+                    <i className='fas fa-shopping-cart' aria-hidden='true'></i>
+                    Cart
+                  </Nav.Link>
+                </LinkContainer>
+                {userInfo ? (
+                  <NavDropdown title={userInfo.name} id='username'>
+                    <LinkContainer to='/profile'>
+                      <NavDropdown.Item>Profile</NavDropdown.Item>
+                    </LinkContainer>
+                    <NavDropdown.Item onClick={logoutHandler}>
+                      Signout
+                    </NavDropdown.Item>
+                  </NavDropdown>
+                ) : (
+                  <LinkContainer to='/signin'>
+                    <Nav.Link>SignIn</Nav.Link>
+                  </LinkContainer>
+                )}
+
+                {userInfo && userInfo.isAdmin && (
+                  <NavDropdown title='Admin' id='adminmenu'>
+                    <LinkContainer to='/admin/userlist'>
+                      <NavDropdown.Item>Users</NavDropdown.Item>
+                    </LinkContainer>
+                    <LinkContainer to='/admin/productlist'>
+                      <NavDropdown.Item>Products</NavDropdown.Item>
+                    </LinkContainer>
+
+                    <LinkContainer to='/admin/orderlist'>
+                      <NavDropdown.Item>Orders</NavDropdown.Item>
+                    </LinkContainer>
+                  </NavDropdown>
+                )}
               </Nav>
-              <Form className='d-flex'>
-                <Form.Control
-                  type='search'
-                  placeholder='Search'
-                  className='me-2'
-                  aria-label='Search'
-                />
-                <Button variant='outline-success'>Search</Button>
-              </Form>
             </Navbar.Collapse>
+            <div className='ml-auto'>
+              <SearchBox />
+            </div>
           </Container>
         </Navbar>
       </header>
