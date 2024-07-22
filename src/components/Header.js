@@ -23,7 +23,7 @@ function Header() {
       <header>
         <Navbar bg='dark' variant='dark' expand='lg' collapseOnSelect>
           <Container>
-            <Navbar.Brand href='/'>Cartify</Navbar.Brand>
+            <Navbar.Brand href='/'>SendCom</Navbar.Brand>
             <Navbar.Toggle aria-controls='basic-navbar-nav' />
             <Navbar.Collapse id='basic-navbar-nav'>
               <Nav className='me-auto'>
@@ -50,10 +50,10 @@ function Header() {
 
                 {userInfo && userInfo.isAdmin && (
                   <NavDropdown title='Admin' id='adminmenu'>
-                    <LinkContainer to='/admin/userlist'>
+                    <LinkContainer to='/admin/users'>
                       <NavDropdown.Item>Users</NavDropdown.Item>
                     </LinkContainer>
-                    <LinkContainer to='/admin/productlist'>
+                    <LinkContainer to='/admin/products'>
                       <NavDropdown.Item>Products</NavDropdown.Item>
                     </LinkContainer>
 

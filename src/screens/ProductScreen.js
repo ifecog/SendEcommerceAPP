@@ -191,7 +191,7 @@ function ProductScreen() {
                         <strong>Quantity:</strong> {product.count_in_stock}
                       </Col>
                       <Col md={6}>
-                        <strong>Brand:</strong> {product.brand.name}
+                        {/* <strong>Brand:</strong> {product.brand.name} */}
                       </Col>
                     </Row>
                   </ListGroup.Item>
