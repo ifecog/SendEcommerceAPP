@@ -12,6 +12,7 @@ import UserEditScreen from './screens/UserEditScreen'
 import ProductListScreen from './screens/ProductListScreen'
 import ProductEditScreen from './screens/ProductEditScreen'
 import CartScreen from './screens/CartScreen'
+import ShippingScreen from './screens/ShippingScreen'
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
             />
             {/* Cart */}
             <Route path='/cart/:id?' element={<CartScreen />} />
+            <Route path='/shipping' element={<ShippingScreen />} />
           </Routes>
         </Container>
       </main>
@@ -45,3 +47,4 @@ function App() {
 }
 
 export default App
+
