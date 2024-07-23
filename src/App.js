@@ -13,6 +13,8 @@ import ProductListScreen from './screens/ProductListScreen'
 import ProductEditScreen from './screens/ProductEditScreen'
 import CartScreen from './screens/CartScreen'
 import ShippingScreen from './screens/ShippingScreen'
+import PaymentScreen from './screens/PaymentScreen'
+import PlaceOrderScreen from './screens/PlaceOrderScreen'
 
 function App() {
   return (
@@ -38,6 +40,9 @@ function App() {
             {/* Cart */}
             <Route path='/cart/:id?' element={<CartScreen />} />
             <Route path='/shipping' element={<ShippingScreen />} />
+            <Route path='/payment' element={<PaymentScreen />} />
+            {/* orders */}
+            <Route path='/placeorder' element={<PlaceOrderScreen />} />
           </Routes>
         </Container>
       </main>
@@ -47,4 +52,3 @@ function App() {
 }
 
 export default App
-
