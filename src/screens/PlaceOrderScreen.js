@@ -38,7 +38,7 @@ function PlaceOrderScreen() {
 
   useEffect(() => {
     if (success && order) {
-      navigate(`/order/${order._id}`)
+      navigate(`/order/${order.uuid}`)
       dispatch({type: ORDER_CREATE_RESET})
     }
   }, [navigate, order, success, dispatch])
@@ -65,17 +65,8 @@ function PlaceOrderScreen() {
           <ListGroup variant='flush'>
             <ListGroup.Item>
               <h2>Shipping</h2>
-              <p>
-                Address:{' '}
-                {cart.shippingAddress.address +
-                  ', ' +
-                  cart.shippingAddress.city +
-                  ' ' +
-                  cart.shippingAddress.postalCode +
-                  ', ' +
-                  cart.shippingAddress.country +
-                  '.'}
-              </p>
+              <p>Address: {cart.shippingAddress.address + '.'}</p>
+              <p>Address Note: {cart.shippingAddress.address_note + '.'}</p>
             </ListGroup.Item>
 
             <ListGroup.Item>

@@ -74,8 +74,8 @@ function ShippingScreen() {
         state,
         city,
         address,
-        addressNote,
-        postalCode,
+        address_note: addressNote,
+        postal_code: postalCode,
         latitude,
         longitude,
       })
