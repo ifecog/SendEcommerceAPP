@@ -21,6 +21,8 @@ function PlaceOrderScreen() {
   const navigate = useNavigate()
 
   const cart = useSelector((state) => state.cart)
+  const userSignin = useSelector((state) => state.userSignin)
+  const {userInfo} = userSignin
 
   cart.itemsPrice = cart.cartItems
     .reduce((acc, item) => acc + item.price * item.qty, 0)
@@ -70,7 +72,7 @@ function PlaceOrderScreen() {
       const fetchSend24Prices = async () => {
         const size_id = '68882080-9cb3-11ed-a1e0-1b525c297de0'
         const is_fragile = 0
-        // const is_fragile = cart.cartItems[0].is_fragile ? 1 : 0
+        // const is_fragile = cart.cartItems[0].is_fragile ? 1 : 0;
         const pickup_coordinates = '6.892107747042948, 3.718155923471927'
         const pickup_state = 'Ogun'
         const destination_coordinates = `${cart.shippingAddress.latitude}, ${cart.shippingAddress.longitude}`
@@ -88,7 +90,13 @@ function PlaceOrderScreen() {
           }
         )
 
-        setSend24Prices(response.data.data)
+        const filteredPrices = response.data.data.filter(
+          (option) =>
+            Object.keys(option).includes('HUB_TO_HUB') ||
+            Object.keys(option).includes('HUB_TO_DOOR')
+        )
+
+        setSend24Prices(filteredPrices)
       }
 
       if (Object.keys(sizeIdMap).length > 0) {
@@ -99,7 +107,7 @@ function PlaceOrderScreen() {
     }
   }, [send24Shipping, cart, sizeIdMap])
 
-  const placeOrder = () => {
+  const placeOrder = async () => {
     if (cart.cartItems.length === 0) {
       alert('Your cart is empty')
       return
@@ -120,6 +128,48 @@ function PlaceOrderScreen() {
         ).toFixed(2),
       })
     )
+
+    if (send24Shipping) {
+      const send24OrderData = {
+        pickup_address:
+          'UNILAG Senate Building, UNILAG Senate Building, Otunba Payne St, Akoka, Lagos 101245, Lagos, Nigeria',
+        pickup_coordinates: '6.5194683, 3.3987129',
+        destination_address: cart.shippingAddress.address,
+        destination_coordinates: `${cart.shippingAddress.latitude}, ${cart.shippingAddress.longitude}`,
+        size_id: '68882080-9cb3-11ed-a1e0-1b525c297de0',
+        label: cart.cartItems[0].name,
+        package_note: cart.cartItems[0].description,
+        is_fragile: 0,
+        name: userInfo.name,
+        phone: userInfo.phone_number,
+        email: userInfo.email,
+        recipient_note:
+          'Quia itaque incidunt distinctio qui blanditiis voluptate quis fugiat alias.',
+        destination_state: cart.shippingAddress.state,
+        destination_local_government: 'Lagelu',
+        pickup_state: 'Lagos',
+        variant: 'HUB_TO_DOOR',
+        origin_hub_id: '32b51d10-8eaf-11ee-8032-37c06d0259ca',
+        images: [cart.cartItems[0].image],
+      }
+
+      try {
+        const config = {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer 1910|vqYFzG0TI3jlfUtRKwOLVw8sfh4gcF4F4VjqhIfZ`,
+          },
+        }
+
+        await axios.post(
+          'https://dev.dilivva.com.ng/api/v1/corporates/orders/',
+          send24OrderData,
+          config
+        )
+      } catch (error) {
+        console.error('Send24 Order Creation Error:', error)
+      }
+    }
   }
 
   return (
@@ -211,36 +261,34 @@ function PlaceOrderScreen() {
             </ListGroup.Item>
           </ListGroup>
         </Col>
-
         <Col md={4}>
           <Card>
             <ListGroup variant='flush'>
               <ListGroup.Item>
                 <h2>Order Summary</h2>
               </ListGroup.Item>
-
               <ListGroup.Item>
                 <Row>
-                  <Col>Items: </Col>
-                  <Col md={4}>${cart.itemsPrice}</Col>
+                  <Col>Items</Col>
+                  <Col>${cart.itemsPrice}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
-                  <Col>Shipping: </Col>
-                  <Col md={4}>${selectedSend24Price || cart.shippingPrice}</Col>
+                  <Col>Shipping</Col>
+                  <Col>${selectedSend24Price || cart.shippingPrice}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
-                  <Col>Tax: </Col>
-                  <Col md={4}>${cart.taxPrice}</Col>
+                  <Col>Tax</Col>
+                  <Col>${cart.taxPrice}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
-                  <Col>Total: </Col>
-                  <Col md={4}>
+                  <Col>Total</Col>
+                  <Col>
                     $
                     {(
                       Number(cart.itemsPrice) +
@@ -250,35 +298,21 @@ function PlaceOrderScreen() {
                   </Col>
                 </Row>
               </ListGroup.Item>
-
+              <ListGroup.Item>
+                {error && <Message variant='danger'>{error}</Message>}
+              </ListGroup.Item>
               <ListGroup.Item>
                 <Button
-                  className='btn-block'
-                  style={{width: '100%'}}
                   type='button'
-                  variant='primary'
-                  disabled={cart.cartItems.length === 0}
+                  className='btn-block'
+                  disabled={cart.cartItems === 0}
                   onClick={placeOrder}
                 >
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      height: '100%',
-                    }}
-                  >
-                    Place Order
-                  </div>
+                  Place Order
                 </Button>
               </ListGroup.Item>
             </ListGroup>
           </Card>
-          <ListGroup variant='flush'>
-            <ListGroup.Item>
-              {error && <Message variant='danger'>{error}</Message>}
-            </ListGroup.Item>
-          </ListGroup>
         </Col>
       </Row>
     </div>
