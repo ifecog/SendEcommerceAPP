@@ -54,7 +54,7 @@ function PlaceOrderScreen() {
   useEffect(() => {
     const fetchSizeIds = async () => {
       const response = await axios.get(
-        'https://dev.dilivva.com.ng/api/v1/sizes'
+        `${process.env.REACT_APP_SEND24_API_URL}sizes`
       )
       const sizes = response.data.data
       const sizeMap = {}
@@ -79,7 +79,7 @@ function PlaceOrderScreen() {
         const destination_state = cart.shippingAddress.state
 
         const response = await axios.post(
-          'https://dev.dilivva.com.ng/api/v1/pricing',
+          `${process.env.REACT_APP_SEND24_API_URL}pricing`,
           {
             size_id,
             pickup_coordinates,
@@ -157,12 +157,12 @@ function PlaceOrderScreen() {
         const config = {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer 1910|vqYFzG0TI3jlfUtRKwOLVw8sfh4gcF4F4VjqhIfZ`,
+            Authorization: `Bearer ${process.env.REACT_APP_SEND24_AUTH_TOKEN}`,
           },
         }
 
         await axios.post(
-          'https://dev.dilivva.com.ng/api/v1/corporates/orders/',
+          `${process.env.REACT_APP_SEND24_API_URL}corporates/orders/`,
           send24OrderData,
           config
         )
