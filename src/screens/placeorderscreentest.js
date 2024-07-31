@@ -3,9 +3,7 @@ import {Link, useNavigate} from 'react-router-dom'
 import {ListGroup, Button, Row, Col, Image, Card, Form} from 'react-bootstrap'
 import {useDispatch, useSelector} from 'react-redux'
 import Message from '../components/Message'
-import Loader from '../components/Loader'
 import CheckoutSteps from '../components/CheckoutSteps'
-import Send24WidgetModal from '../components/Send24WidgetModal'
 import {createOrder} from '../actions/orderActions'
 import {ORDER_CREATE_RESET} from '../constants/orderConstants'
 import axios from 'axios'
@@ -15,8 +13,6 @@ function PlaceOrderScreen() {
   const [send24Prices, setSend24Prices] = useState(null)
   const [selectedSend24Price, setSelectedSend24Price] = useState(null)
   const [sizeIdMap, setSizeIdMap] = useState({})
-  const [send24ModalVisible, setSend24ModalVisible] = useState(false)
-  const [loading, setLoading] = useState(false)
 
   const orderCreate = useSelector((state) => state.orderCreate)
   const {order, error, success} = orderCreate
@@ -134,7 +130,6 @@ function PlaceOrderScreen() {
     )
 
     if (send24Shipping) {
-      setLoading(false)
       const send24OrderData = {
         pickup_address:
           'UNILAG Senate Building, UNILAG Senate Building, Otunba Payne St, Akoka, Lagos 101245, Lagos, Nigeria',
@@ -174,14 +169,7 @@ function PlaceOrderScreen() {
       } catch (error) {
         console.error('Send24 Order Creation Error:', error)
       }
-    } else {
-      setLoading(true)
     }
-  }
-
-  const closeModal = () => {
-    setSend24ModalVisible(false)
-    setSend24Shipping(false)
   }
 
   return (
@@ -196,15 +184,37 @@ function PlaceOrderScreen() {
               <p>Address Note: {cart.shippingAddress.address_note + '.'}</p>
               <Form.Check
                 type='checkbox'
-                label={
-                  <span className={send24Shipping ? 'not-blink' : 'blink'}>
-                    Use Send24 for Shipping!
-                  </span>
-                }
+                label='Use Send24 for shipping'
                 checked={send24Shipping}
-                onClick={() => setSend24ModalVisible(true)}
                 onChange={() => setSend24Shipping(!send24Shipping)}
               />
+              {send24Shipping && send24Prices && (
+                <div>
+                  <h3>Send24 Shipping Options</h3>
+                  <ListGroup>
+                    {send24Prices.map((option, index) => (
+                      <ListGroup.Item key={index}>
+                        <Row>
+                          <Col>{Object.keys(option)[0]}</Col>
+                          <Col>${option[Object.keys(option)[0]].price}</Col>
+                          <Col>
+                            <Button
+                              type='button'
+                              onClick={() =>
+                                setSelectedSend24Price(
+                                  option[Object.keys(option)[0]].price
+                                )
+                              }
+                            >
+                              Select
+                            </Button>
+                          </Col>
+                        </Row>
+                      </ListGroup.Item>
+                    ))}
+                  </ListGroup>
+                </div>
+              )}
             </ListGroup.Item>
 
             <ListGroup.Item>
@@ -305,14 +315,6 @@ function PlaceOrderScreen() {
           </Card>
         </Col>
       </Row>
-      {loading && <Loader />}
-      <Send24WidgetModal
-        show={send24ModalVisible}
-        onClose={closeModal}
-        onSelect={(price) => setSelectedSend24Price(price)}
-        sizeIdMap={sizeIdMap}
-        cart={cart}
-      />
     </div>
   )
 }
