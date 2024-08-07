@@ -4,12 +4,17 @@ import {ListGroup, Row, Col, Image, Card, Button} from 'react-bootstrap'
 import {useDispatch, useSelector} from 'react-redux'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
+import axios from 'axios'
 import {
   getOrderDetails,
   deliverOrder,
   createPaypalPayment,
+  dispatchOrder,
 } from '../actions/orderActions'
-import {ORDER_DELIVERY_RESET} from '../constants/orderConstants'
+import {
+  ORDER_DELIVERY_RESET,
+  ORDER_DISPATCH_RESET,
+} from '../constants/orderConstants'
 
 function OrderScreen() {
   const {id: uuid} = useParams()
@@ -22,6 +27,9 @@ function OrderScreen() {
   const orderDelivery = useSelector((state) => state.orderDelivery)
   const {loading: loadingDelivery, success: successDelivery} = orderDelivery
 
+  const orderDispatch = useSelector((state) => state.orderDispatch)
+  const {loading: loadingDispatch, success: successDispatch} = orderDispatch
+
   const userSignin = useSelector((state) => state.userSignin)
   const {userInfo} = userSignin
 
@@ -33,20 +41,31 @@ function OrderScreen() {
     error: errorPaypal,
   } = paypalPayment
 
-  if (!loading && !error) {
-    order.itemsPrice = order.orderItems
-      .reduce((acc, item) => acc + item.price * item.qty, 0)
-      .toFixed(2)
-  }
+  const [send24Shipping, setSend24Shipping] = useState(false)
+
+  useEffect(() => {
+    const send24ShippingOption =
+      localStorage.getItem('send24Shipping') === 'true'
+    setSend24Shipping(send24ShippingOption)
+  }, [])
 
   useEffect(() => {
     if (!userInfo) {
       navigate('/signin')
     }
-    console.log('Order UUID:', uuid)
-    if (!order || order.uuid !== uuid || successDelivery || successPaypal) {
+
+    if (
+      !order ||
+      order.uuid !== uuid ||
+      successDelivery ||
+      successPaypal ||
+      successDispatch
+    ) {
       dispatch({type: ORDER_DELIVERY_RESET})
+      dispatch({type: ORDER_DISPATCH_RESET})
       dispatch(getOrderDetails(uuid))
+    } else if (order.send24Shipping) {
+      setSend24Shipping(true)
     }
   }, [
     navigate,
@@ -56,10 +75,57 @@ function OrderScreen() {
     uuid,
     successDelivery,
     successPaypal,
+    successDispatch,
   ])
 
   const deliveryHandler = () => {
     dispatch(deliverOrder(order))
+  }
+
+  const dispatchHandler = async () => {
+    if (send24Shipping) {
+      const send24OrderData = {
+        pickup_address:
+          'UNILAG Senate Building, UNILAG Senate Building, Otunba Payne St, Akoka, Lagos 101245, Lagos, Nigeria',
+        pickup_coordinates: '6.5194683, 3.3987129',
+        destination_address: order.shippingAddress.address,
+        destination_coordinates: `${order.shippingAddress.latitude}, ${order.shippingAddress.longitude}`,
+        size_id: '68882080-9cb3-11ed-a1e0-1b525c297de0',
+        label: order.orderItems[0].name,
+        package_note: order.orderItems[0].description,
+        is_fragile: 0,
+        name: userInfo.name,
+        phone: userInfo.phone_number,
+        email: userInfo.email,
+        recipient_note:
+          'Quia itaque incidunt distinctio qui blanditiis voluptate quis fugiat alias.',
+        destination_state: order.shippingAddress.state,
+        destination_local_government: 'Lagelu',
+        pickup_state: 'Lagos',
+        variant: 'HUB_TO_DOOR',
+        origin_hub_id: '32b51d10-8eaf-11ee-8032-37c06d0259ca',
+        images: [order.orderItems[0].image],
+      }
+
+      try {
+        const config = {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer 1936|220En9Wf2ne2r0CtVO6XL2bGY8iCq11NK3Q1PmWX`,
+          },
+        }
+
+        await axios.post(
+          'https://dev.dilivva.com.ng/api/v1/corporates/orders/',
+          send24OrderData,
+          config
+        )
+      } catch (error) {
+        console.error('Send24 Order Creation Error:', error)
+      }
+    }
+
+    dispatch(dispatchOrder(order))
   }
 
   const paypalPaymentHandler = async () => {
@@ -198,23 +264,42 @@ function OrderScreen() {
                   )}
                 </ListGroup.Item>
               )}
-            </ListGroup>
 
-            {loadingDelivery && <Loader />}
-            {userInfo &&
-              userInfo.isAdmin &&
-              order.is_paid &&
-              !order.is_delivered && (
-                <ListGroup.Item>
-                  <Button
-                    type='button'
-                    className='btn-block'
-                    onClick={deliveryHandler}
-                  >
-                    Mark as Delivered
-                  </Button>
-                </ListGroup.Item>
-              )}
+              {loadingDispatch && <Loader />}
+
+              {userInfo &&
+                userInfo.isAdmin &&
+                order.is_paid &&
+                !order.is_available_for_dispatch && (
+                  <ListGroup.Item>
+                    <Button
+                      type='button'
+                      className='btn-block'
+                      onClick={dispatchHandler}
+                    >
+                      Dispatch for Delivery
+                    </Button>
+                  </ListGroup.Item>
+                )}
+
+              {loadingDelivery && <Loader />}
+
+              {userInfo &&
+                userInfo.isAdmin &&
+                order.is_paid &&
+                order.is_available_for_dispatch &&
+                !order.is_delivered && (
+                  <ListGroup.Item>
+                    <Button
+                      type='button'
+                      className='btn-block'
+                      onClick={deliveryHandler}
+                    >
+                      Mark as Delivered
+                    </Button>
+                  </ListGroup.Item>
+                )}
+            </ListGroup>
           </Card>
         </Col>
       </Row>

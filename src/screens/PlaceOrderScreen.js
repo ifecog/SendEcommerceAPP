@@ -111,6 +111,14 @@ function PlaceOrderScreen() {
     }
   }, [send24Shipping, cart, sizeIdMap])
 
+  useEffect(() => {
+    if (send24Shipping) {
+      localStorage.setItem('send24Shipping', true)
+    } else {
+      localStorage.setItem('send24Shipping', false)
+    }
+  }, [send24Shipping])
+
   const placeOrder = async () => {
     if (cart.cartItems.length === 0) {
       alert('Your cart is empty')
@@ -133,55 +141,55 @@ function PlaceOrderScreen() {
       })
     )
 
-    if (send24Shipping) {
-      setLoading(false)
-      const send24OrderData = {
-        pickup_address:
-          'UNILAG Senate Building, UNILAG Senate Building, Otunba Payne St, Akoka, Lagos 101245, Lagos, Nigeria',
-        pickup_coordinates: '6.5194683, 3.3987129',
-        destination_address: cart.shippingAddress.address,
-        destination_coordinates: `${cart.shippingAddress.latitude}, ${cart.shippingAddress.longitude}`,
-        size_id: '68882080-9cb3-11ed-a1e0-1b525c297de0',
-        label: cart.cartItems[0].name,
-        package_note: cart.cartItems[0].description,
-        is_fragile: 0,
-        name: userInfo.name,
-        phone: userInfo.phone_number,
-        email: userInfo.email,
-        recipient_note:
-          'Quia itaque incidunt distinctio qui blanditiis voluptate quis fugiat alias.',
-        destination_state: cart.shippingAddress.state,
-        destination_local_government: 'Lagelu',
-        pickup_state: 'Lagos',
-        variant: 'HUB_TO_DOOR',
-        origin_hub_id: '32b51d10-8eaf-11ee-8032-37c06d0259ca',
-        images: [cart.cartItems[0].image],
-      }
+    // if (send24Shipping) {
+    //   setLoading(false)
+    //   const send24OrderData = {
+    //     pickup_address:
+    //       'UNILAG Senate Building, UNILAG Senate Building, Otunba Payne St, Akoka, Lagos 101245, Lagos, Nigeria',
+    //     pickup_coordinates: '6.5194683, 3.3987129',
+    //     destination_address: cart.shippingAddress.address,
+    //     destination_coordinates: `${cart.shippingAddress.latitude}, ${cart.shippingAddress.longitude}`,
+    //     size_id: '68882080-9cb3-11ed-a1e0-1b525c297de0',
+    //     label: cart.cartItems[0].name,
+    //     package_note: cart.cartItems[0].description,
+    //     is_fragile: 0,
+    //     name: userInfo.name,
+    //     phone: userInfo.phone_number,
+    //     email: userInfo.email,
+    //     recipient_note:
+    //       'Quia itaque incidunt distinctio qui blanditiis voluptate quis fugiat alias.',
+    //     destination_state: cart.shippingAddress.state,
+    //     destination_local_government: 'Lagelu',
+    //     pickup_state: 'Lagos',
+    //     variant: 'HUB_TO_DOOR',
+    //     origin_hub_id: '32b51d10-8eaf-11ee-8032-37c06d0259ca',
+    //     images: [cart.cartItems[0].image],
+    //   }
 
-      try {
-        const config = {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer 1910|vqYFzG0TI3jlfUtRKwOLVw8sfh4gcF4F4VjqhIfZ`,
-          },
-        }
+    //   try {
+    //     const config = {
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //         Authorization: `Bearer 1910|vqYFzG0TI3jlfUtRKwOLVw8sfh4gcF4F4VjqhIfZ`,
+    //       },
+    //     }
 
-        await axios.post(
-          'https://dev.dilivva.com.ng/api/v1/corporates/orders/',
-          send24OrderData,
-          config
-        )
-      } catch (error) {
-        console.error('Send24 Order Creation Error:', error)
-      }
-    } else {
-      setLoading(true)
-    }
+    //     await axios.post(
+    //       'https://dev.dilivva.com.ng/api/v1/corporates/orders/',
+    //       send24OrderData,
+    //       config
+    //     )
+    //   } catch (error) {
+    //     console.error('Send24 Order Creation Error:', error)
+    //   }
+    // } else {
+    //   setLoading(true)
+    // }
   }
 
   const closeModal = () => {
     setSend24ModalVisible(false)
-    setSend24Shipping(false)
+    // setSend24Shipping(false)
   }
 
   return (

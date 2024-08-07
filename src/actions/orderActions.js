@@ -27,6 +27,11 @@ import {
   PAYPAL_PAYMENT_REQUEST,
   PAYPAL_PAYMENT_SUCCESS,
   PAYPAL_PAYMENT_FAIL,
+  // Order dispatch
+  ORDER_DISPATCH_REQUEST,
+  ORDER_DISPATCH_SUCCESS,
+  ORDER_DISPATCH_FAIL,
+  ORDER_DISPATCH_RESET,
 } from '../constants/orderConstants'
 import {CART_CLEAR_ITEMS} from '../constants/cartConstants'
 
@@ -213,6 +218,78 @@ export const payOrder = (paymentId, PayerID) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: ORDER_PAY_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    })
+  }
+}
+
+export const listOrders = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: ORDER_LIST_REQUEST,
+    })
+
+    const {
+      userSignin: {userInfo},
+    } = getState()
+
+    const config = {
+      headers: {
+        'Content-type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+
+    const {data} = await axios.get(`/api/orders/`, config)
+
+    dispatch({
+      type: ORDER_LIST_SUCCESS,
+      payload: data,
+    })
+  } catch (error) {
+    dispatch({
+      type: ORDER_LIST_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    })
+  }
+}
+
+export const dispatchOrder = (order) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: ORDER_DISPATCH_REQUEST,
+    })
+
+    const {
+      userSignin: {userInfo},
+    } = getState()
+
+    const config = {
+      headers: {
+        'Content-type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    }
+
+    const {data} = await axios.put(
+      `/api/orders/${order.uuid}/dispatch/`,
+      {},
+      config
+    )
+
+    dispatch({
+      type: ORDER_DISPATCH_SUCCESS,
+      payload: data,
+    })
+  } catch (error) {
+    dispatch({
+      type: ORDER_DISPATCH_FAIL,
       payload:
         error.response && error.response.data.detail
           ? error.response.data.detail

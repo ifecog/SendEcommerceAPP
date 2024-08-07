@@ -17,6 +17,8 @@ import PaymentScreen from './screens/PaymentScreen'
 import PlaceOrderScreen from './screens/PlaceOrderScreen'
 import OrderScreen from './screens/OrderScreen'
 import PaypalReturnScreen from './screens/PaypalReturnScreen'
+import OrderListScreen from './screens/OrderListScreen'
+
 
 function App() {
   return (
@@ -39,6 +41,7 @@ function App() {
               path='/admin/product/:id/edit'
               element={<ProductEditScreen />}
             />
+            <Route path='admin/orderlist' element={<OrderListScreen />} />
             {/* Cart */}
             <Route path='/cart/:id?' element={<CartScreen />} />
             <Route path='/shipping' element={<ShippingScreen />} />
